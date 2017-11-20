@@ -58,6 +58,12 @@
                     <DataTemplate DataType="{x:Type viewModel:MoveInstructionModel}">
                         <TextBlock Text="{Binding}" />
                     </DataTemplate>
+                    <DataTemplate DataType="{x:Type viewModel:LoopInstructionModel}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding}" />
+                            <ListBox ItemsSource="{Binding Path=Instructions}" />
+                        </StackPanel>
+                    </DataTemplate>
                 </ListBox.Resources>
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
