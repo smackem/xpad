@@ -6,32 +6,62 @@
         xmlns:viewModel="clr-namespace:XPad.Desktop.ViewModel"
         mc:Ignorable="d"
         Title="XPad" Height="350" Width="525">
+    <Window.Resources>
+        <!-- ============================= Critter List -->
+        <Style x:Key="critterListItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Canvas.Left" Value="{Binding Path=X}" />
+            <Setter Property="Canvas.Top" Value="{Binding Path=Y}" />
+            <Setter Property="Background" Value="Black" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Ellipse Fill="{TemplateBinding Background}" Width="25" Height="25" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="CornflowerBlue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ============================= Program List -->
+        <DataTemplate x:Key="programListItemTemplate">
+            <TreeView ItemsSource="{Binding Path=Instructions}" />
+        </DataTemplate>
+
+        <ResourceDictionary x:Key="programListResources">
+            <DataTemplate DataType="{x:Type viewModel:MoveInstructionModel}">
+                <TextBlock Text="{Binding}" />
+            </DataTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type viewModel:LoopInstructionModel}" ItemsSource="{Binding Path=Instructions}">
+                <StackPanel>
+                    <TextBlock Text="{Binding}" />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+        </ResourceDictionary>
+
+        <!-- ============================= Run Button -->
+        <Style x:Key="runButtonStyle" TargetType="{x:Type Button}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsProgramRunning}" Value="True">
+                    <Setter Property="Background" Value="Gold" />
+                    <Setter Property="Foreground" Value="Black" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <!-- ============================= VISUAL TREE -->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
  
-        <ListBox x:Name="critterList" ItemsSource="{Binding Path=Critters}">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="Canvas.Left" Value="{Binding Path=X}" />
-                    <Setter Property="Canvas.Top" Value="{Binding Path=Y}" />
-                    <Setter Property="Background" Value="Black" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <Ellipse Fill="{TemplateBinding Background}" Width="25" Height="25" />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="CornflowerBlue" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ListBox.ItemContainerStyle>
+        <ListBox x:Name="critterList" ItemsSource="{Binding Path=Critters}"
+                 ItemContainerStyle="{StaticResource critterListItemStyle}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas />
@@ -40,41 +70,18 @@
         </ListBox>
  
         <StackPanel Grid.Column="1">
-            <Button Click="runButton_Click" Content="Run" MinWidth="70" MinHeight="30">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsProgramRunning}" Value="True">
-                                <Setter Property="Background" Value="Gold" />
-                                <Setter Property="Foreground" Value="Black" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-            <ListBox ItemsSource="{Binding Path=Critters}"
-                     SelectedItem="{Binding ElementName=critterList, Path=SelectedItem}">
-                <ListBox.Resources>
-                    <DataTemplate DataType="{x:Type viewModel:MoveInstructionModel}">
-                        <TextBlock Text="{Binding}" />
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type viewModel:LoopInstructionModel}">
-                        <StackPanel>
-                            <TextBlock Text="{Binding}" />
-                            <ListBox ItemsSource="{Binding Path=Instructions}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.Resources>
+            <Button Click="runButton_Click" Content="Run" MinWidth="70" MinHeight="30"
+                    Style="{StaticResource runButtonStyle}" />
+            <ListBox x:Name="programList"
+                     ItemsSource="{Binding Path=Critters}"
+                     SelectedItem="{Binding ElementName=critterList, Path=SelectedItem}"
+                     ItemTemplate="{StaticResource programListItemTemplate}"
+                     Resources="{StaticResource programListResources}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <ListBox ItemsSource="{Binding Path=Instructions}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
     </Grid>
