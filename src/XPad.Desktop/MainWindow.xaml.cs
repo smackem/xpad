@@ -86,5 +86,10 @@ namespace XPad.Desktop
             if (isRunning == false)
                 this.timer.Stop();
         }
+
+        private void addInstructionButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

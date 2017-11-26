@@ -62,6 +62,7 @@ namespace XPad.Engine
         public override bool Equals(object obj)
         {
             return obj != null
+                && obj.GetType() == GetType()
                 && Equals((Vector)obj);
         }
 
