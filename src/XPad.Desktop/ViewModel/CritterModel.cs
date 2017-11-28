@@ -11,7 +11,7 @@ namespace XPad.Desktop.ViewModel
     [Feather(FeatherAction.NotifyPropertyChanged)]
     class CritterModel : NotifyPropertyChanged
     {
-        readonly ObservableCollection<InstructionModel> instructions = new ObservableCollection<InstructionModel>();
+        readonly ObservableCollection<InstructionModel> instructions;
 
         public double X { get; set; }
         public double Y { get; set; }
@@ -19,12 +19,14 @@ namespace XPad.Desktop.ViewModel
 
         public Engine.Program Program { get; private set; }
 
-        public void Disassemble(Engine.Program program)
+        public static CritterModel Disassemble(Engine.Program program)
         {
-            this.instructions.Clear();
+            return new CritterModel(InstructionModel.FromCollection(program.Instructions));
+        }
 
-            foreach (var instr in program.Instructions)
-                this.instructions.Add(InstructionModel.FromInstruction(instr));
+        CritterModel(ObservableCollection<InstructionModel> instructions)
+        {
+            this.instructions = instructions;
         }
 
         public void Compile()

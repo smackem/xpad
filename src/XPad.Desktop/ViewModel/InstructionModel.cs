@@ -32,6 +32,13 @@ namespace XPad.Desktop.ViewModel
                     throw new ArgumentException($"Unsupported instruction type {instruction.GetType()}!");
             }
         }
+
+        public static ObservableCollection<InstructionModel> FromCollection(IEnumerable<Engine.Instruction> instructions)
+        {
+            var models = instructions.Select(instr => FromInstruction(instr));
+            var collection = new ObservableCollection<InstructionModel>(models);
+            return collection;
+        }
     }
 
     [Feather(FeatherAction.NotifyPropertyChanged)]
@@ -56,16 +63,12 @@ namespace XPad.Desktop.ViewModel
     [Feather(FeatherAction.NotifyPropertyChanged)]
     public class LoopInstructionModel : InstructionModel
     {
-        readonly ObservableCollection<InstructionModel> instructions = new ObservableCollection<InstructionModel>();
+        readonly ObservableCollection<InstructionModel> instructions;
 
         public LoopInstructionModel(Engine.LoopInstruction instruction)
             : base(instruction)
         {
-            var models = instruction.Instructions
-                .Select(instr => FromInstruction(instr));
-
-            foreach (var model in models)
-                this.instructions.Add(model);
+            this.instructions = InstructionModel.FromCollection(instruction.Instructions);
 
             Repetitions = instruction.Repetitions;
         }

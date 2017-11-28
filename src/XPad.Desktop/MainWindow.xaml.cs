@@ -40,8 +40,7 @@ namespace XPad.Desktop
                 }, 3),
             });
 
-            var critter = new ViewModel.CritterModel();
-            critter.Disassemble(program);
+            var critter = ViewModel.CritterModel.Disassemble(program);
             this.model.Critters.Add(critter);
 
             program = new Engine.Program(new[]
@@ -54,8 +53,7 @@ namespace XPad.Desktop
                 }, 2),
             });
 
-            critter = new ViewModel.CritterModel();
-            critter.Disassemble(program);
+            critter = ViewModel.CritterModel.Disassemble(program);
             this.model.Critters.Add(critter);
 
             this.timer = new DispatcherTimer(
