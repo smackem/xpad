@@ -13,7 +13,7 @@ namespace XPad.Desktop.ViewModel
     {
         public InstructionModel(Engine.Instruction instruction)
         {
-            Instruction = instruction ?? throw new ArgumentNullException(nameof(instruction));
+            Instruction = instruction;
         }
 
         public Engine.Instruction Instruction { get; }
@@ -37,6 +37,7 @@ namespace XPad.Desktop.ViewModel
         {
             var models = instructions.Select(instr => FromInstruction(instr));
             var collection = new ObservableCollection<InstructionModel>(models);
+            collection.Add(new AddInstructionModel(collection));
             return collection;
         }
     }
@@ -79,6 +80,23 @@ namespace XPad.Desktop.ViewModel
         public override string ToString()
         {
             return $"Loop {Repetitions} times over {Instructions.Count} instructions";
+        }
+    }
+
+    [Feather(FeatherAction.NotifyPropertyChanged)]
+    public class AddInstructionModel : InstructionModel
+    {
+        public AddInstructionModel(IList<InstructionModel> parentCollection)
+            : base(null)
+        {
+            ParentCollection = parentCollection;
+        }
+
+        public IList<InstructionModel> ParentCollection { get; }
+
+        public override string ToString()
+        {
+            return "Add Instruction";
         }
     }
 }

@@ -109,8 +109,6 @@
                             </Border>
                             <ItemsPresenter x:Name="ItemsHost"
                                             Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
-                            <Button Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
-                                    Click="addInstructionButton_Click" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsExpanded" Value="false">
@@ -175,6 +173,9 @@
                     <TextBlock Text="{Binding}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:AddInstructionModel}">
+                <Button Content="Add..." Click="addInstructionButton_Click" />
+            </DataTemplate>
         </ResourceDictionary>
 
         <!--=================================================================

@@ -24,11 +24,6 @@ namespace XPad.Desktop.ViewModel
             return new CritterModel(InstructionModel.FromCollection(program.Instructions));
         }
 
-        CritterModel(ObservableCollection<InstructionModel> instructions)
-        {
-            this.instructions = instructions;
-        }
-
         public void Compile()
         {
             Program = new Engine.Program(this.instructions
@@ -56,6 +51,13 @@ namespace XPad.Desktop.ViewModel
             }
 
             return isRunning;
+        }
+
+        // ====================================================================
+
+        CritterModel(ObservableCollection<InstructionModel> instructions)
+        {
+            this.instructions = instructions;
         }
     }
 }
