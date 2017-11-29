@@ -30,7 +30,8 @@ namespace XPad.Desktop.ViewModel
         public void Compile()
         {
             Program = new Engine.Program(this.instructions
-                .Select(instr => instr.Instruction));
+                .Select(instr => instr.Instruction)
+                .Where(instr => instr != null));
         }
 
         public bool Tick()
