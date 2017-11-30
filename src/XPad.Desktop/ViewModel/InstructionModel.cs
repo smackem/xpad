@@ -98,5 +98,16 @@ namespace XPad.Desktop.ViewModel
         {
             return "Add Instruction";
         }
+
+        public void AddNewInstructionToParentCollection()
+        {
+            var list = ParentCollection;
+            var newModel = new MoveInstructionModel(new Engine.MoveInstruction(100, 100));
+
+            if (list.Count > 0)
+                list.Insert(list.Count - 1, newModel);
+            else
+                list.Add(newModel);
+        }
     }
 }

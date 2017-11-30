@@ -87,9 +87,10 @@ namespace XPad.Desktop
 
         void addInstructionButton_Click(object sender, RoutedEventArgs e)
         {
-            if ((e.Source as FrameworkElement)?.DataContext is ViewModel.AddInstructionModel model)
+            if (e.Source is FrameworkElement elem
+                && elem.DataContext is ViewModel.AddInstructionModel model)
             {
-                model.ParentCollection.Add(new ViewModel.MoveInstructionModel(new Engine.MoveInstruction(10, 10)));
+                model.AddNewInstructionToParentCollection();
             }
         }
     }
