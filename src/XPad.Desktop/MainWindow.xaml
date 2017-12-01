@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModel="clr-namespace:XPad.Desktop.ViewModel"
+        xmlns:app="clr-namespace:XPad.Desktop.Application"
+        xmlns:controls="clr-namespace:XPad.Desktop.Controls"
         mc:Ignorable="d"
         Title="XPad" Height="350" Width="525">
     <Window.Resources>
@@ -165,16 +166,23 @@
         </DataTemplate>
 
         <ResourceDictionary x:Key="programListResources">
-            <DataTemplate DataType="{x:Type viewModel:MoveInstructionModel}">
+            <DataTemplate DataType="{x:Type app:MoveInstructionModel}">
                 <TextBlock Text="{Binding}" />
             </DataTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type viewModel:LoopInstructionModel}" ItemsSource="{Binding Path=Instructions}">
+            <HierarchicalDataTemplate DataType="{x:Type app:LoopInstructionModel}" ItemsSource="{Binding Path=Instructions}">
                 <StackPanel>
                     <TextBlock Text="{Binding}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
-            <DataTemplate DataType="{x:Type viewModel:AddInstructionModel}">
-                <Button Content="Add..." Click="addInstructionButton_Click" />
+            <DataTemplate DataType="{x:Type app:AddInstructionModel}">
+                <controls:DropDownButton Content="Add...">
+                    <ButtonBase.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Move" Click="addInstructionButton_Click" />
+                            <MenuItem Header="Loop" />
+                        </ContextMenu>
+                    </ButtonBase.ContextMenu>
+                </controls:DropDownButton>
             </DataTemplate>
         </ResourceDictionary>
 

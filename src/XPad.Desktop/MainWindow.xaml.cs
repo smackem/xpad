@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -21,7 +22,7 @@ namespace XPad.Desktop
     /// </summary>
     public partial class MainWindow : Window
     {
-        readonly ViewModel.MainWindowModel model = new ViewModel.MainWindowModel();
+        readonly Application.MainWindowModel model = new Application.MainWindowModel();
         readonly DispatcherTimer timer;
 
         public MainWindow()
@@ -40,7 +41,7 @@ namespace XPad.Desktop
                 }, 3),
             });
 
-            var critter = ViewModel.CritterModel.Disassemble(program);
+            var critter = Application.CritterModel.Disassemble(program);
             this.model.Critters.Add(critter);
 
             program = new Engine.Program(new[]
@@ -53,7 +54,7 @@ namespace XPad.Desktop
                 }, 2),
             });
 
-            critter = ViewModel.CritterModel.Disassemble(program);
+            critter = Application.CritterModel.Disassemble(program);
             this.model.Critters.Add(critter);
 
             this.timer = new DispatcherTimer(
@@ -65,30 +66,20 @@ namespace XPad.Desktop
 
         void runButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var critter in this.model.Critters)
-                critter.Compile();
-
+            this.model.CompileAndStartProgram();
             this.timer.Start();
-            this.model.IsProgramRunning = true;
         }
 
         void TimerTick(object sender, EventArgs e)
         {
-            var isRunning = false;
-
-            foreach (var critter in this.model.Critters)
-                isRunning |= critter.Tick();
-
-            this.model.IsProgramRunning = isRunning;
-
-            if (isRunning == false)
+            if (this.model.Tick() == false)
                 this.timer.Stop();
         }
 
         void addInstructionButton_Click(object sender, RoutedEventArgs e)
         {
             if (e.Source is FrameworkElement elem
-                && elem.DataContext is ViewModel.AddInstructionModel model)
+                && elem.DataContext is Application.AddInstructionModel model)
             {
                 model.AddNewInstructionToParentCollection();
             }

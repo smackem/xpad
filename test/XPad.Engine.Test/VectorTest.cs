@@ -60,13 +60,18 @@ namespace XPad.Engine.Test
         public void TestEquals()
         {
             var v1 = new Vector(1.0, 2.0);
+            Assert.AreNotEqual(v1, null);
+
             var v2 = new Vector(1.0, 2.0);
+            Assert.IsTrue(v1.Equals(v2 as object));
+            Assert.AreEqual(v1, v2);
             Assert.AreEqual(v1, v2);
             Assert.AreEqual(v1.GetHashCode(), v2.GetHashCode());
             Assert.IsTrue(v1 == v2);
             Assert.IsFalse(v1 != v2);
 
             var v3 = new Vector(3.0, 3.0);
+            Assert.IsFalse(v1.Equals(v3 as object));
             Assert.AreNotEqual(v1, v3);
             Assert.AreNotEqual(v2, v3);
             Assert.IsFalse(v1 == v3);

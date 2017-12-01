@@ -59,17 +59,11 @@ namespace XPad.Engine
             return Math.Sqrt(dx * dx + dy * dy);
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj != null
-                && obj.GetType() == GetType()
-                && Equals((Vector)obj);
-        }
+        public override string ToString() => $"({X}, {Y})";
 
-        public bool Equals(Vector other)
-        {
-            return X == other.X && Y == other.Y;
-        }
+        public override bool Equals(object obj) => obj is Vector v && v.Equals(this);
+
+        public bool Equals(Vector other) => X == other.X && Y == other.Y;
 
         public override int GetHashCode()
         {
@@ -78,8 +72,6 @@ namespace XPad.Engine
             hashCode = hashCode * -1521134295 + Y.GetHashCode();
             return hashCode;
         }
-
-        public override string ToString() => $"({X}, {Y})";
 
         /// <summary>
         /// Subtracts two vectors.

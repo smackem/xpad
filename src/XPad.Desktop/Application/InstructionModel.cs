@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XPad.Desktop.ViewModel
+namespace XPad.Desktop.Application
 {
     [Feather(FeatherAction.NotifyPropertyChanged)]
     public abstract class InstructionModel : NotifyPropertyChanged

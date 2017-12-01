@@ -79,15 +79,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\DropDownButton.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ViewModel\CritterModel.cs" />
-    <Compile Include="ViewModel\InstructionModel.cs" />
-    <Compile Include="ViewModel\MainWindowModel.cs" />
+    <Compile Include="Application\CritterModel.cs" />
+    <Compile Include="Application\InstructionModel.cs" />
+    <Compile Include="Application\MainWindowModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
