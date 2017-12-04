@@ -36,5 +36,10 @@ namespace XPad.Desktop.Application
 
             return isRunning;
         }
+
+        public void AddCritter()
+        {
+            Critters.Add(new CritterModel());
+        }
     }
 }

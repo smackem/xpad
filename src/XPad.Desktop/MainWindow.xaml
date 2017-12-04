@@ -11,7 +11,7 @@
         <!--=================================================================
             Critter List
           ==================================================================-->
-        <Style x:Key="critterListItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Style x:Key="CritterListItemStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="Canvas.Left" Value="{Binding Path=X}" />
             <Setter Property="Canvas.Top" Value="{Binding Path=Y}" />
             <Setter Property="Background" Value="Black" />
@@ -32,7 +32,7 @@
         <!--=================================================================
             Instruction TreeViewItem
           ==================================================================-->
-        <Style x:Key="expandCollapseToggleStyle" TargetType="ToggleButton">
+        <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -58,7 +58,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="treeViewItemFocusVisual">
+        <Style x:Key="TreeViewItemFocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
                     <ControlTemplate>
@@ -73,13 +73,13 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="instructionTreeItemStyle" TargetType="{x:Type TreeViewItem}">
+        <Style x:Key="InstructionTreeItemStyle" TargetType="{x:Type TreeViewItem}">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
             <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
             <Setter Property="Padding" Value="1,0,0,0"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            <Setter Property="FocusVisualStyle" Value="{StaticResource treeViewItemFocusVisual}"/>
+            <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
             <Setter Property="IsExpanded" Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -95,7 +95,7 @@
                                 <RowDefinition />
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <ToggleButton x:Name="Expander" Style="{StaticResource expandCollapseToggleStyle}"
+                            <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}"
                                           IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
                                           ClickMode="Press"/>
                             <Border Name="Bd"
@@ -160,26 +160,91 @@
         <!--=================================================================
             Program List
           ==================================================================-->
-        <DataTemplate x:Key="programListItemTemplate">
-            <TreeView ItemsSource="{Binding Path=Instructions}"
-                      ItemContainerStyle="{StaticResource instructionTreeItemStyle}"/>
+        <DataTemplate x:Key="ProgramListItemTemplate">
+            <TreeView ItemsSource="{Binding Path=Sources}"
+                      ItemContainerStyle="{StaticResource InstructionTreeItemStyle}"
+                      SelectedItemChanged="TreeView_SelectedItemChanged" />
         </DataTemplate>
 
-        <ResourceDictionary x:Key="programListResources">
-            <DataTemplate DataType="{x:Type app:MoveInstructionModel}">
-                <TextBlock Text="{Binding}" />
+        <Style x:Key="AddInstructionDropDownStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border Background="Transparent">
+                            <TextBlock x:Name="Text" Text="{TemplateBinding Content}" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Text" Property="Foreground" Value="Red" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="MoveSourceEditTemplate" DataType="{x:Type app:MoveInstructionSource}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Move To " />
+                <TextBlock VerticalAlignment="Center" Text="X:" />
+                <TextBox Text="{Binding Path=DestX}" />
+                <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Y:" />
+                <TextBox Text="{Binding Path=DestY}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="LoopSourceEditTemplate" DataType="{x:Type app:LoopInstructionSource}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Loop " />
+                <TextBox Text="{Binding Path=Repetitions}" />
+                <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Times" />
+            </StackPanel>
+        </DataTemplate>
+
+        <ResourceDictionary x:Key="ProgramListResources">
+            <DataTemplate DataType="{x:Type app:MoveInstructionSource}">
+                <ContentPresenter x:Name="Cp" Content="{Binding}">
+                    <ContentPresenter.ContentTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Move To X:" />
+                                <TextBlock Text="{Binding Path=DestX}" />
+                                <TextBlock Margin="8 0 0 0" Text="Y:" />
+                                <TextBlock Text="{Binding Path=DestY}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ContentPresenter.ContentTemplate>
+                </ContentPresenter>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}, Path=IsSelected}" Value="True">
+                        <Setter TargetName="Cp" Property="ContentTemplate" Value="{StaticResource MoveSourceEditTemplate}" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
             </DataTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type app:LoopInstructionModel}" ItemsSource="{Binding Path=Instructions}">
-                <StackPanel>
-                    <TextBlock Text="{Binding}" />
-                </StackPanel>
+            <HierarchicalDataTemplate DataType="{x:Type app:LoopInstructionSource}" ItemsSource="{Binding Path=Sources}">
+                <ContentPresenter x:Name="Cp" Content="{Binding}">
+                    <ContentPresenter.ContentTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Loop " />
+                                <TextBlock Text="{Binding Path=Repetitions}" />
+                                <TextBlock Text=" Times" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ContentPresenter.ContentTemplate>
+                </ContentPresenter>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}, Path=IsSelected}" Value="True">
+                        <Setter TargetName="Cp" Property="ContentTemplate" Value="{StaticResource LoopSourceEditTemplate}" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
             </HierarchicalDataTemplate>
-            <DataTemplate DataType="{x:Type app:AddInstructionModel}">
-                <controls:DropDownButton Content="Add...">
+            <DataTemplate DataType="{x:Type app:AddPseudoInstructionSource}">
+                <controls:DropDownButton Content="Add" Style="{StaticResource AddInstructionDropDownStyle}">
                     <ButtonBase.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Move" Click="addInstructionButton_Click" />
-                            <MenuItem Header="Loop" />
+                            <MenuItem Header="Move" Click="AddMoveInstructionButton_Click" />
+                            <MenuItem Header="Loop" Click="AddLoopInstructionButton_Click" />
                         </ContextMenu>
                     </ButtonBase.ContextMenu>
                 </controls:DropDownButton>
@@ -189,7 +254,7 @@
         <!--=================================================================
             Run Button
           ==================================================================-->
-        <Style x:Key="runButtonStyle" TargetType="{x:Type Button}">
+        <Style x:Key="RunButtonStyle" TargetType="{x:Type Button}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=IsProgramRunning}" Value="True">
                     <Setter Property="Background" Value="Gold" />
@@ -208,8 +273,8 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <ListBox x:Name="critterList" ItemsSource="{Binding Path=Critters}"
-                 ItemContainerStyle="{StaticResource critterListItemStyle}">
+        <ListBox x:Name="CritterList" ItemsSource="{Binding Path=Critters}"
+                 ItemContainerStyle="{StaticResource CritterListItemStyle}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas />
@@ -218,13 +283,14 @@
         </ListBox>
 
         <StackPanel Grid.Column="1">
-            <Button Click="runButton_Click" Content="Run" MinWidth="70" MinHeight="30"
-                    Style="{StaticResource runButtonStyle}" />
-            <ListBox x:Name="programList"
+            <Button Click="RunButton_Click" Content="Run" MinWidth="70" MinHeight="30"
+                    Style="{StaticResource RunButtonStyle}" />
+            <Button Click="AddCritterButton_Click" Content="Add Critter" MinWidth="70" MinHeight="30" />
+            <ListBox x:Name="ProgramList"
                      ItemsSource="{Binding Path=Critters}"
-                     SelectedItem="{Binding ElementName=critterList, Path=SelectedItem}"
-                     ItemTemplate="{StaticResource programListItemTemplate}"
-                     Resources="{StaticResource programListResources}">
+                     SelectedItem="{Binding ElementName=CritterList, Path=SelectedItem}"
+                     ItemTemplate="{StaticResource ProgramListItemTemplate}"
+                     Resources="{StaticResource ProgramListResources}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" />

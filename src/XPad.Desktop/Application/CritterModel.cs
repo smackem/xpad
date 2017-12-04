@@ -11,23 +11,23 @@ namespace XPad.Desktop.Application
     [Feather(FeatherAction.NotifyPropertyChanged)]
     class CritterModel : NotifyPropertyChanged
     {
-        readonly ObservableCollection<InstructionModel> instructions;
+        readonly ObservableCollection<InstructionSource> sources = new ObservableCollection<InstructionSource>();
+
+        public CritterModel()
+        {
+            this.sources.Add(new AddPseudoInstructionSource(this.sources));
+        }
 
         public double X { get; set; }
         public double Y { get; set; }
-        public IList<InstructionModel> Instructions => this.instructions;
+        public IList<InstructionSource> Sources => this.sources;
 
         public Engine.Program Program { get; private set; }
 
-        public static CritterModel Disassemble(Engine.Program program)
-        {
-            return new CritterModel(InstructionModel.FromCollection(program.Instructions));
-        }
-
         public void Compile()
         {
-            Program = new Engine.Program(this.instructions
-                .Select(instr => instr.Instruction)
+            Program = new Engine.Program(this.sources
+                .Select(source => source.Compile())
                 .Where(instr => instr != null));
         }
 
@@ -51,13 +51,6 @@ namespace XPad.Desktop.Application
             }
 
             return isRunning;
-        }
-
-        // ====================================================================
-
-        CritterModel(ObservableCollection<InstructionModel> instructions)
-        {
-            this.instructions = instructions;
         }
     }
 }

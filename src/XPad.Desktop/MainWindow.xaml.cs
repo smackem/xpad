@@ -31,32 +31,6 @@ namespace XPad.Desktop
 
             DataContext = this.model;
 
-            var program = new Engine.Program(new[]
-            {
-                new Engine.LoopInstruction(new[]
-                {
-                    new Engine.MoveInstruction(200, 250),
-                    new Engine.MoveInstruction(300, 50),
-                    new Engine.MoveInstruction(0, 0),
-                }, 3),
-            });
-
-            var critter = Application.CritterModel.Disassemble(program);
-            this.model.Critters.Add(critter);
-
-            program = new Engine.Program(new[]
-            {
-                new Engine.LoopInstruction(new[]
-                {
-                    new Engine.MoveInstruction(100, 250),
-                    new Engine.MoveInstruction(0, 550),
-                    new Engine.MoveInstruction(0, 0),
-                }, 2),
-            });
-
-            critter = Application.CritterModel.Disassemble(program);
-            this.model.Critters.Add(critter);
-
             this.timer = new DispatcherTimer(
                 TimeSpan.FromMilliseconds(40),
                 DispatcherPriority.Normal,
@@ -64,7 +38,7 @@ namespace XPad.Desktop
                 Dispatcher);
         }
 
-        void runButton_Click(object sender, RoutedEventArgs e)
+        void RunButton_Click(object sender, RoutedEventArgs e)
         {
             this.model.CompileAndStartProgram();
             this.timer.Start();
@@ -76,13 +50,33 @@ namespace XPad.Desktop
                 this.timer.Stop();
         }
 
-        void addInstructionButton_Click(object sender, RoutedEventArgs e)
+        void AddMoveInstructionButton_Click(object sender, RoutedEventArgs e)
         {
             if (e.Source is FrameworkElement elem
-                && elem.DataContext is Application.AddInstructionModel model)
+                && elem.DataContext is Application.AddPseudoInstructionSource source)
             {
-                model.AddNewInstructionToParentCollection();
+                source.AddMoveInstructionToParentCollection();
             }
+        }
+
+        void AddLoopInstructionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (e.Source is FrameworkElement elem
+                && elem.DataContext is Application.AddPseudoInstructionSource source)
+            {
+                source.AddLoopInstructionToParentCollection();
+            }
+        }
+
+        void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (sender is TreeView tree)
+                ProgramList.SelectedItem = tree.DataContext;
+        }
+
+        void AddCritterButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.model.AddCritter();
         }
     }
 }

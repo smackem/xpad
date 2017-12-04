@@ -49,7 +49,11 @@ namespace XPad.Engine
             var dest = new Vector(DestX, DestY);
             var diff = dest - pos;
             if (diff.Length < StepLength)
+            {
+                critterState.PositionX = DestX;
+                critterState.PositionY = DestY;
                 return false;
+            }
 
             // normalize diff vector so that length is 1, then multiply it
             // with StepLength to get the increment vector.
