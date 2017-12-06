@@ -11,9 +11,9 @@ namespace XPad.Desktop.Application
     [Feather(FeatherAction.NotifyPropertyChanged)]
     class MainWindowModel : NotifyPropertyChanged
     {
-        readonly ObservableCollection<CritterModel> critters = new ObservableCollection<CritterModel>();
+        readonly ObservableCollection<Critter> critters = new ObservableCollection<Critter>();
 
-        public IList<CritterModel> Critters => this.critters;
+        public IList<Critter> Critters => this.critters;
 
         public bool IsProgramRunning { get; set; }
 
@@ -39,7 +39,7 @@ namespace XPad.Desktop.Application
 
         public void AddCritter()
         {
-            Critters.Add(new CritterModel());
+            Critters.Add(new Critter());
         }
     }
 }

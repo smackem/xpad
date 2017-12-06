@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,8 @@ namespace XPad.Desktop.Application
 
         protected InstructionSource()
         {
+            IsModified = true;
+
             // mark as dirty when property changes
             this.PropertyChanged += (sender, e) =>
             {
@@ -66,7 +69,7 @@ namespace XPad.Desktop.Application
         {
             // mark as dirty when collection changes
             this.sources.Add(new AddPseudoInstructionSource(this.sources));
-            this.sources.CollectionChanged += (sender, e) => IsModified = true;
+            this.sources.CollectionChanged += Sources_CollectionChanged;
         }
 
         public int Repetitions { get; set; }
@@ -83,6 +86,39 @@ namespace XPad.Desktop.Application
         public override string ToString()
         {
             return $"Loop {Repetitions} times over {Sources.Count} instructions";
+        }
+
+        void Sources_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Reset:
+                    if (e.NewItems != null)
+                    {
+                        foreach (InstructionSource source in e.NewItems)
+                            source.PropertyChanged += Source_PropertyChanged;
+                    }
+                    if (e.OldItems != null)
+                    {
+                        foreach (InstructionSource source in e.OldItems)
+                            source.PropertyChanged -= Source_PropertyChanged;
+                    }
+                    break;
+            }
+
+            IsModified = true;
+        }
+
+        void Source_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IsModified)
+                && ((InstructionSource)sender).IsModified)
+            {
+                IsModified = true;
+            }
         }
     }
 

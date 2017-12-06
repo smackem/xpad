@@ -86,7 +86,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\CritterModel.cs" />
+    <Compile Include="Application\Critter.cs" />
     <Compile Include="Application\InstructionSource.cs" />
     <Compile Include="Application\MainWindowModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

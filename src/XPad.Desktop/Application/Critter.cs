@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 namespace XPad.Desktop.Application
 {
     [Feather(FeatherAction.NotifyPropertyChanged)]
-    class CritterModel : NotifyPropertyChanged
+    class Critter : NotifyPropertyChanged
     {
         readonly ObservableCollection<InstructionSource> sources = new ObservableCollection<InstructionSource>();
 
-        public CritterModel()
+        public Critter()
         {
             this.sources.Add(new AddPseudoInstructionSource(this.sources));
         }
@@ -34,6 +34,10 @@ namespace XPad.Desktop.Application
         public bool Tick()
         {
             var program = Program;
+
+            if (program == null)
+                Compile();
+
             var isRunning = false;
 
             if (program != null)
